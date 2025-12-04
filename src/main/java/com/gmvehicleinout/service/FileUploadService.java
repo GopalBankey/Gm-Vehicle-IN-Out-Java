@@ -1,0 +1,36 @@
+package com.gmvehicleinout.service;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
+
+@Service
+public class FileUploadService {
+
+    private final String UPLOAD_DIR = "/app/uploads/"; // For Railway
+    // private final String UPLOAD_DIR = "uploads/"; // Local
+
+    public String saveFile(MultipartFile file) {
+        try {
+            if (file == null || file.isEmpty()) return null;
+
+            File dir = new File(UPLOAD_DIR);
+            if (!dir.exists()) dir.mkdirs();
+
+            String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+            Path path = Paths.get(UPLOAD_DIR + fileName);
+
+            Files.write(path, file.getBytes());
+
+            return fileName; // store only name
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+}

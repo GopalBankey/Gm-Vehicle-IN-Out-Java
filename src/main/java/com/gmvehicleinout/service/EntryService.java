@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class EntryService {
@@ -23,6 +24,9 @@ public class EntryService {
 
     @Autowired
     private VehicleDetailsRepository vehicleDetailsRepository;
+
+    @Autowired
+    private FileUploadService fileUploadService;
 
 
     // --------------------------------------------
@@ -46,41 +50,48 @@ public class EntryService {
             vehicle.setMobile(entryDto.getMobile());
             vehicle.setChassisNumber(entryDto.getChassisNumber());
         } else {
-            if (vehicle.getMobile() == null || !vehicle.getMobile().equals(entryDto.getMobile())) {
+            if (!Objects.equals(vehicle.getMobile(), entryDto.getMobile())) {
                 vehicle.setMobile(entryDto.getMobile());
             }
-
-            if (vehicle.getOwnerName() == null || !vehicle.getOwnerName().equals(entryDto.getOwnerName())) {
+            if (!Objects.equals(vehicle.getOwnerName(), entryDto.getOwnerName())) {
                 vehicle.setOwnerName(entryDto.getOwnerName());
             }
-
-            if (vehicle.getChassisNumber() == null || !vehicle.getChassisNumber().equals(entryDto.getChassisNumber())) {
+            if (!Objects.equals(vehicle.getChassisNumber(), entryDto.getChassisNumber())) {
                 vehicle.setChassisNumber(entryDto.getChassisNumber());
             }
         }
 
         vehicleDetailsRepository.save(vehicle);
 
-        // Check active entry (user + vehicle)
-        Entry activeEntry =
-                entryRepository.findByVehicle_VehicleNumberAndUserAndOutTimeIsNull(
-                        entryDto.getVehicleNumber(), loggedUser
-                ).orElse(null);
+        // Check active entry
+        Entry activeEntry = entryRepository
+                .findByVehicle_VehicleNumberAndUserAndOutTimeIsNull(
+                        entryDto.getVehicleNumber(),
+                        loggedUser)
+                .orElse(null);
 
         if (activeEntry != null) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(new ApiResponse<>("Vehicle already In", false));
         }
 
-        // Create new Entry
+        // SAVE IMAGES
+        String rcFile = fileUploadService.saveFile(entryDto.getRcPhoto());
+        String vehicleFile = fileUploadService.saveFile(entryDto.getVehiclePhoto());
+        String idCardFile = fileUploadService.saveFile(entryDto.getIdCardPhoto());
+
+        // Create Entry
         Entry entry = new Entry();
         entry.setVehicle(vehicle);
         entry.setLocation(entryDto.getLocation());
         entry.setKey(entryDto.isKey());
         entry.setUser(loggedUser);
 
-        entryRepository.save(entry);
+        entry.setRcPhoto(rcFile);
+        entry.setVehiclePhoto(vehicleFile);
+        entry.setIdCardPhoto(idCardFile);
 
+        entryRepository.save(entry);
         EntryResponseDto responseDto = new EntryResponseDto(
                 entry.getId(),
                 vehicle.getVehicleNumber(),
@@ -92,8 +103,12 @@ public class EntryService {
                 entry.getInTime(),
                 entry.getOutTime(),
                 entry.getCreatedAt(),
-                entry.getUpdatedAt()
+                entry.getUpdatedAt(),
+                entry.getRcPhoto(),
+                entry.getVehiclePhoto(),
+                entry.getIdCardPhoto()
         );
+
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ApiResponse<>("Vehicle Added Successfully", true, responseDto));
@@ -145,7 +160,11 @@ public class EntryService {
                 entry.getInTime(),
                 entry.getOutTime(),
                 entry.getCreatedAt(),
-                entry.getUpdatedAt()
+                entry.getUpdatedAt(),
+                entry.getRcPhoto(),
+                entry.getVehiclePhoto(),
+                entry.getIdCardPhoto()
+
         )).toList();
 
         return ResponseEntity.ok(
