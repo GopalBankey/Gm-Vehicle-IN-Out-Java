@@ -38,7 +38,7 @@ public class EntryService {
         String mobile = SecurityContextHolder.getContext().getAuthentication().getName();
         User loggedUser = userRepository.findByMobile(mobile).orElseThrow();
 
-        // Check vehicle Details table
+        // Check vehicle information
         VehicleDetails vehicle = vehicleDetailsRepository
                 .findById(entryDto.getVehicleNumber())
                 .orElse(null);
@@ -75,7 +75,7 @@ public class EntryService {
                     .body(new ApiResponse<>("Vehicle already In", false));
         }
 
-        // SAVE IMAGES
+        // Save Images
         String rcFile = fileUploadService.saveFile(entryDto.getRcPhoto());
         String vehicleFile = fileUploadService.saveFile(entryDto.getVehiclePhoto());
         String idCardFile = fileUploadService.saveFile(entryDto.getIdCardPhoto());
@@ -92,6 +92,7 @@ public class EntryService {
         entry.setIdCardPhoto(idCardFile);
 
         entryRepository.save(entry);
+
         EntryResponseDto responseDto = new EntryResponseDto(
                 entry.getId(),
                 vehicle.getVehicleNumber(),
@@ -108,7 +109,6 @@ public class EntryService {
                 entry.getVehiclePhoto(),
                 entry.getIdCardPhoto()
         );
-
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ApiResponse<>("Vehicle Added Successfully", true, responseDto));
