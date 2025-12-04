@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,42 +33,33 @@ public class EntryService {
     // --------------------------------------------
     //  IN ENTRY
     // --------------------------------------------
-    public ResponseEntity<ApiResponse<EntryResponseDto>> addEntry(EntryDto entryDto) {
+    public ResponseEntity<ApiResponse<EntryResponseDto>> addEntry(
+            EntryDto entryDto,
+            MultipartFile rcPhoto,
+            MultipartFile vehiclePhoto,
+            MultipartFile idCardPhoto
+    ) {
 
         // Logged user
         String mobile = SecurityContextHolder.getContext().getAuthentication().getName();
         User loggedUser = userRepository.findByMobile(mobile).orElseThrow();
 
-        // Check vehicle information
+        // find or save vehicle (your same logic)
         VehicleDetails vehicle = vehicleDetailsRepository
                 .findById(entryDto.getVehicleNumber())
-                .orElse(null);
+                .orElse(new VehicleDetails());
 
-        if (vehicle == null) {
-            vehicle = new VehicleDetails();
-            vehicle.setVehicleNumber(entryDto.getVehicleNumber());
-            vehicle.setOwnerName(entryDto.getOwnerName());
-            vehicle.setMobile(entryDto.getMobile());
-            vehicle.setChassisNumber(entryDto.getChassisNumber());
-        } else {
-            if (!Objects.equals(vehicle.getMobile(), entryDto.getMobile())) {
-                vehicle.setMobile(entryDto.getMobile());
-            }
-            if (!Objects.equals(vehicle.getOwnerName(), entryDto.getOwnerName())) {
-                vehicle.setOwnerName(entryDto.getOwnerName());
-            }
-            if (!Objects.equals(vehicle.getChassisNumber(), entryDto.getChassisNumber())) {
-                vehicle.setChassisNumber(entryDto.getChassisNumber());
-            }
-        }
+        vehicle.setVehicleNumber(entryDto.getVehicleNumber());
+        vehicle.setOwnerName(entryDto.getOwnerName());
+        vehicle.setMobile(entryDto.getMobile());
+        vehicle.setChassisNumber(entryDto.getChassisNumber());
 
         vehicleDetailsRepository.save(vehicle);
 
-        // Check active entry
+        // prevent duplicate active entry
         Entry activeEntry = entryRepository
                 .findByVehicle_VehicleNumberAndUserAndOutTimeIsNull(
-                        entryDto.getVehicleNumber(),
-                        loggedUser)
+                        entryDto.getVehicleNumber(), loggedUser)
                 .orElse(null);
 
         if (activeEntry != null) {
@@ -75,10 +67,10 @@ public class EntryService {
                     .body(new ApiResponse<>("Vehicle already In", false));
         }
 
-        // Save Images
-        String rcFile = fileUploadService.saveFile(entryDto.getRcPhoto());
-        String vehicleFile = fileUploadService.saveFile(entryDto.getVehiclePhoto());
-        String idCardFile = fileUploadService.saveFile(entryDto.getIdCardPhoto());
+        // ⭐ SAVE IMAGES HERE ⭐
+        String rcFile = fileUploadService.saveFile(rcPhoto);
+        String vehicleFile = fileUploadService.saveFile(vehiclePhoto);
+        String idCardFile = fileUploadService.saveFile(idCardPhoto);
 
         // Create Entry
         Entry entry = new Entry();
@@ -93,7 +85,8 @@ public class EntryService {
 
         entryRepository.save(entry);
 
-        EntryResponseDto responseDto = new EntryResponseDto(
+        // response
+        EntryResponseDto response = new EntryResponseDto(
                 entry.getId(),
                 vehicle.getVehicleNumber(),
                 vehicle.getOwnerName(),
@@ -110,8 +103,7 @@ public class EntryService {
                 entry.getIdCardPhoto()
         );
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ApiResponse<>("Vehicle Added Successfully", true, responseDto));
+        return ResponseEntity.ok(new ApiResponse<>("Vehicle Added", true, response));
     }
 
 

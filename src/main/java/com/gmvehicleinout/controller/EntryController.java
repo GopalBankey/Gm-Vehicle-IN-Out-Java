@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -20,10 +21,15 @@ public class EntryController {
     private EntryService entryService;
 
     @PostMapping(value = "/in-entry", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<EntryResponseDto>> addEntry(@RequestBody @Valid EntryDto entryDto) {
-        return entryService.addEntry(entryDto);
-
+    public ResponseEntity<ApiResponse<EntryResponseDto>> addEntry(
+            @RequestPart("data") EntryDto entryDto,     // JSON OBJECT
+            @RequestPart(value = "rcPhoto", required = false) MultipartFile rcPhoto,
+            @RequestPart(value = "vehiclePhoto", required = false) MultipartFile vehiclePhoto,
+            @RequestPart(value = "idCardPhoto", required = false) MultipartFile idCardPhoto
+    ) {
+        return entryService.addEntry(entryDto, rcPhoto, vehiclePhoto, idCardPhoto);
     }
+
 
     @PostMapping("/out-entry/{vehicleNumber}")
     public ResponseEntity<ApiResponse> outEntry(@PathVariable String vehicleNumber) {
