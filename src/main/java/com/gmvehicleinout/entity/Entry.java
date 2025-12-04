@@ -19,14 +19,10 @@ public class Entry {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "vehicle_number", nullable = false)
-    private String vehicleNumber;
-
-    private String ownerName;
-
-    private String mobile;
-
-    private String chassisNumber;
+    // FK to vehicle master table
+    @ManyToOne
+    @JoinColumn(name = "vehicle_number", referencedColumnName = "vehicle_number", nullable = false)
+    private VehicleDetails vehicle;
 
     private String location;
 
@@ -47,7 +43,7 @@ public class Entry {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    // 🔥 Add user relationship (Entry belongs to a user)
+    // Entry belongs to user
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
