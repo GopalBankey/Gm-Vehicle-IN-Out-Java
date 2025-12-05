@@ -140,6 +140,8 @@ public class EntryService {
         User loggedUser = userRepository.findByMobile(mobile).orElseThrow();
 
         List<Entry> entries = entryRepository.findByUser(loggedUser);
+        String baseUrl = "https://gm-vehicle-in-out-java-production.up.railway.app/uploads/";
+
 
         List<EntryResponseDto> dtos = entries.stream().map(entry -> new EntryResponseDto(
                 entry.getId(),
@@ -153,9 +155,9 @@ public class EntryService {
                 entry.getOutTime(),
                 entry.getCreatedAt(),
                 entry.getUpdatedAt(),
-                entry.getRcPhoto(),
-                entry.getVehiclePhoto(),
-                entry.getIdCardPhoto()
+                baseUrl + entry.getRcPhoto(),
+                baseUrl + entry.getVehiclePhoto(),
+                baseUrl + entry.getIdCardPhoto()
 
         )).toList();
 
