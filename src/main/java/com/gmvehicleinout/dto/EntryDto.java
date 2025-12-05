@@ -18,8 +18,4 @@ public class EntryDto {
     private String chassisNumber;
     private boolean key;
 
-    // NEW IMAGE FIELDS
-    private MultipartFile rcPhoto;
-    private MultipartFile vehiclePhoto;
-    private MultipartFile idCardPhoto;
 }

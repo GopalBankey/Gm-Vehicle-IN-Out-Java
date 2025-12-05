@@ -27,7 +27,11 @@ public class VehicleService {
                 vehicle.getVehicleNumber(),
                 vehicle.getOwnerName(),
                 vehicle.getMobile(),
-                vehicle.getChassisNumber()
+                vehicle.getChassisNumber(),
+                vehicle.getRcPhoto(),
+                vehicle.getVehiclePhoto(),
+                vehicle.getIdCardPhoto()
+
         );
 
         return ResponseEntity.ok(

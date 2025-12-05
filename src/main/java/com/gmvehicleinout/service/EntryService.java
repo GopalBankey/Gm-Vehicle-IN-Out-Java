@@ -40,11 +40,11 @@ public class EntryService {
             MultipartFile idCardPhoto
     ) {
 
-        // Logged user
+        // Logged-in user
         String mobile = SecurityContextHolder.getContext().getAuthentication().getName();
         User loggedUser = userRepository.findByMobile(mobile).orElseThrow();
 
-        // Find or create vehicle
+        // ----- FIND OR CREATE VEHICLE -----
         VehicleDetails vehicle = vehicleDetailsRepository
                 .findById(entryDto.getVehicleNumber())
                 .orElse(new VehicleDetails());
@@ -54,12 +54,21 @@ public class EntryService {
         vehicle.setMobile(entryDto.getMobile());
         vehicle.setChassisNumber(entryDto.getChassisNumber());
 
+        // SAVE IMAGES INSIDE VEHICLE DETAILS
+        String rcFile = fileUploadService.saveFile(rcPhoto);
+        String vehicleFile = fileUploadService.saveFile(vehiclePhoto);
+        String idCardFile = fileUploadService.saveFile(idCardPhoto);
+
+        if (rcFile != null) vehicle.setRcPhoto(rcFile);
+        if (vehicleFile != null) vehicle.setVehiclePhoto(vehicleFile);
+        if (idCardFile != null) vehicle.setIdCardPhoto(idCardFile);
+
+        // Save updated vehicle record
         vehicleDetailsRepository.save(vehicle);
 
-        // Prevent duplicate entry
+        // ----- PREVENT DUPLICATE ACTIVE ENTRY -----
         Entry activeEntry = entryRepository
-                .findByVehicle_VehicleNumberAndUserAndOutTimeIsNull(
-                        entryDto.getVehicleNumber(), loggedUser)
+                .findByVehicle_VehicleNumberAndUserAndOutTimeIsNull(entryDto.getVehicleNumber(), loggedUser)
                 .orElse(null);
 
         if (activeEntry != null) {
@@ -67,29 +76,23 @@ public class EntryService {
                     .body(new ApiResponse<>("Vehicle already In", false));
         }
 
-        // ⭐ SAVE IMAGES ⭐
-        String rcFile = fileUploadService.saveFile(rcPhoto);
-        String vehicleFile = fileUploadService.saveFile(vehiclePhoto);
-        String idCardFile = fileUploadService.saveFile(idCardPhoto);
-
-        // Create entry
+        // ----- CREATE NEW ENTRY -----
         Entry entry = new Entry();
         entry.setVehicle(vehicle);
         entry.setLocation(entryDto.getLocation());
         entry.setKey(entryDto.isKey());
         entry.setUser(loggedUser);
 
-        entry.setRcPhoto(rcFile);
-        entry.setVehiclePhoto(vehicleFile);
-        entry.setIdCardPhoto(idCardFile);
-
         entryRepository.save(entry);
 
-        // Convert filenames → FULL URLs
-        String rcUrl = fileUploadService.getFileUrl(rcFile);
-        String vehicleUrl = fileUploadService.getFileUrl(vehicleFile);
-        String idCardUrl = fileUploadService.getFileUrl(idCardFile);
+        // ----- PREPARE FULL URLs -----
+        String baseUrl = "https://gm-vehicle-in-out-java-production.up.railway.app/files/";
 
+        String rcUrl = vehicle.getRcPhoto() != null ? baseUrl + vehicle.getRcPhoto() : null;
+        String vehicleUrl = vehicle.getVehiclePhoto() != null ? baseUrl + vehicle.getVehiclePhoto() : null;
+        String idCardUrl = vehicle.getIdCardPhoto() != null ? baseUrl + vehicle.getIdCardPhoto() : null;
+
+        // ----- RESPONSE DTO -----
         EntryResponseDto response = new EntryResponseDto(
                 entry.getId(),
                 vehicle.getVehicleNumber(),
@@ -109,6 +112,7 @@ public class EntryService {
 
         return ResponseEntity.ok(new ApiResponse<>("Vehicle Added Successfully", true, response));
     }
+
 
 
     // --------------------------------------------
@@ -145,21 +149,23 @@ public class EntryService {
 
         List<Entry> entries = entryRepository.findByUser(loggedUser);
 
-        // Correct public base URL (your domain)
+        // Public base URL on Railway
         String baseUrl = "https://gm-vehicle-in-out-java-production.up.railway.app/files/";
 
         List<EntryResponseDto> dtos = entries.stream().map(entry -> {
 
-            String rcUrl = entry.getRcPhoto() != null ? baseUrl + entry.getRcPhoto() : null;
-            String vehicleUrl = entry.getVehiclePhoto() != null ? baseUrl + entry.getVehiclePhoto() : null;
-            String idCardUrl = entry.getIdCardPhoto() != null ? baseUrl + entry.getIdCardPhoto() : null;
+            VehicleDetails v = entry.getVehicle();
+
+            String rcUrl = v.getRcPhoto() != null ? baseUrl + v.getRcPhoto() : null;
+            String vehicleUrl = v.getVehiclePhoto() != null ? baseUrl + v.getVehiclePhoto() : null;
+            String idCardUrl = v.getIdCardPhoto() != null ? baseUrl + v.getIdCardPhoto() : null;
 
             return new EntryResponseDto(
                     entry.getId(),
-                    entry.getVehicle().getVehicleNumber(),
-                    entry.getVehicle().getOwnerName(),
-                    entry.getVehicle().getMobile(),
-                    entry.getVehicle().getChassisNumber(),
+                    v.getVehicleNumber(),
+                    v.getOwnerName(),
+                    v.getMobile(),
+                    v.getChassisNumber(),
                     entry.getLocation(),
                     entry.isKey(),
                     entry.getInTime(),
@@ -172,8 +178,6 @@ public class EntryService {
             );
         }).toList();
 
-        return ResponseEntity.ok(
-                new ApiResponse<>("All Entries", true, dtos)
-        );
+        return ResponseEntity.ok(new ApiResponse<>("All Entries", true, dtos));
     }
 }
