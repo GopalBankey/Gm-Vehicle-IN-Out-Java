@@ -1,4 +1,4 @@
-package com.gmvehicleinout.security;
+package com.gmvehicleinout.config;
 
 import com.gmvehicleinout.filter.JwtFilter;
 
@@ -27,7 +27,7 @@ public class SecurityConfig {
                 .sessionManagement(sess ->
                         sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/login", "/api/create-user", "/api/refresh-token").permitAll()
+                        .requestMatchers("/api/login", "/api/create-user", "/api/refresh-token","/uploads/**").permitAll()
                         .anyRequest().authenticated()
                 );
 
