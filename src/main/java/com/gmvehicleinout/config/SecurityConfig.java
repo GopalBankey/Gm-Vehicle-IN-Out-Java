@@ -1,7 +1,6 @@
 package com.gmvehicleinout.config;
 
 import com.gmvehicleinout.filter.JwtFilter;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,15 +22,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http.csrf(csrf -> csrf.disable())
+        http
+                .csrf(csrf -> csrf.disable())
                 .sessionManagement(sess ->
                         sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/login", "/api/create-user", "/api/refresh-token","/files/**").permitAll()
+                        .requestMatchers("/api/login", "/api/create-user", "/api/refresh-token").permitAll()
+                        .requestMatchers("/files/**").permitAll()
                         .anyRequest().authenticated()
-                );
-
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                )
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

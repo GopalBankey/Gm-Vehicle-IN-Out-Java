@@ -16,7 +16,7 @@ import java.nio.file.Paths;
 @RequestMapping("/files")
 public class FileServeController {
 
-    private final String UPLOAD_DIR = "/app/uploads/";
+    private final String UPLOAD_DIR = "/tmp/uploads/";
 
     @GetMapping("/{fileName}")
     public ResponseEntity<byte[]> getFile(@PathVariable String fileName) {

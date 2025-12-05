@@ -11,7 +11,7 @@ import java.util.UUID;
 @Service
 public class FileUploadService {
 
-    private final String UPLOAD_DIR = "/app/uploads/";
+    private final String UPLOAD_DIR = "/tmp/uploads/";
 
     public String saveFile(MultipartFile file) {
         try {
