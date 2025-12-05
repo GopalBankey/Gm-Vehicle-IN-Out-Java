@@ -22,15 +22,16 @@ public class VehicleService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ApiResponse<>("Vehicle not found", false));
         }
+        String baseUrl = "https://gm-vehicle-in-out-java-production.up.railway.app/files/";
 
         VehicleDetailsResponseDto dto = new VehicleDetailsResponseDto(
                 vehicle.getVehicleNumber(),
                 vehicle.getOwnerName(),
                 vehicle.getMobile(),
                 vehicle.getChassisNumber(),
-                vehicle.getRcPhoto(),
-                vehicle.getVehiclePhoto(),
-                vehicle.getIdCardPhoto()
+              baseUrl +  vehicle.getRcPhoto(),
+               baseUrl + vehicle.getVehiclePhoto(),
+                baseUrl + vehicle.getIdCardPhoto()
 
         );
 
