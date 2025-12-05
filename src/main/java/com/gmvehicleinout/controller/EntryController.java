@@ -28,7 +28,6 @@ public class EntryController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     public ResponseEntity<ApiResponse<EntryResponseDto>> addEntry(
-
             @RequestPart("data") String dataJson,
             @RequestPart(value = "rcPhoto", required = false) MultipartFile rcPhoto,
             @RequestPart(value = "vehiclePhoto", required = false) MultipartFile vehiclePhoto,
@@ -40,6 +39,7 @@ public class EntryController {
 
         return entryService.addEntry(entryDto, rcPhoto, vehiclePhoto, idCardPhoto);
     }
+
 
     @PostMapping("/out-entry/{vehicleNumber}")
     public ResponseEntity<ApiResponse> outEntry(@PathVariable String vehicleNumber) {

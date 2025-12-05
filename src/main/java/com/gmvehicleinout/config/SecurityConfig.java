@@ -27,7 +27,7 @@ public class SecurityConfig {
                 .sessionManagement(sess ->
                         sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/login", "/api/create-user", "/api/refresh-token","/uploads/**").permitAll()
+                        .requestMatchers("/api/login", "/api/create-user", "/api/refresh-token","/files/**").permitAll()
                         .anyRequest().authenticated()
                 );
 

@@ -8,12 +8,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
-
 @Service
 public class FileUploadService {
 
-    private final String UPLOAD_DIR = "/app/uploads/"; // For Railway
-    // private final String UPLOAD_DIR = "uploads/"; // Local
+    private final String UPLOAD_DIR = "/app/uploads/";
 
     public String saveFile(MultipartFile file) {
         try {
@@ -27,10 +25,16 @@ public class FileUploadService {
 
             Files.write(path, file.getBytes());
 
-            return fileName; // store only name
+            return fileName;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
+    }
+
+    // RETURN FULL URL FOR FLUTTER
+    public String getFileUrl(String fileName) {
+        if (fileName == null) return null;
+        return "https://gm-vehicle-in-out-java-production.up.railway.app/files/" + fileName;
     }
 }
