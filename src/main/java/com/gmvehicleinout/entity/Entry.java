@@ -49,5 +49,8 @@ public class Entry {
     private User user;
 
 
+    private String driverName;
+
+
 
 }

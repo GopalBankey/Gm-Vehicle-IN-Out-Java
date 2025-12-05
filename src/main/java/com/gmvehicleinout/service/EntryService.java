@@ -107,7 +107,9 @@ public class EntryService {
                 entry.getUpdatedAt(),
                 rcUrl,
                 vehicleUrl,
-                idCardUrl
+                idCardUrl,
+                entry.getDriverName()
+
         );
 
         return ResponseEntity.ok(new ApiResponse<>("Vehicle Added Successfully", true, response));
@@ -174,7 +176,8 @@ public class EntryService {
                     entry.getUpdatedAt(),
                     rcUrl,
                     vehicleUrl,
-                    idCardUrl
+                    idCardUrl,
+                    entry.getDriverName()
             );
         }).toList();
 

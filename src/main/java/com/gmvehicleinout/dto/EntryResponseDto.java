@@ -23,5 +23,7 @@ public class EntryResponseDto {
 
     private String rcPhoto;        // NEW
     private String vehiclePhoto;   // NEW
-    private String idCardPhoto;    // NEW
+    private String idCardPhoto;
+
+    private  String  driverName;// NEW
 }
