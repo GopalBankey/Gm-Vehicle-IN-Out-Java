@@ -63,8 +63,6 @@ public class EntryService {
         if (vehicleFile != null) vehicle.setVehiclePhoto(vehicleFile);
         if (idCardFile != null) vehicle.setIdCardPhoto(idCardFile);
 
-        // Save updated vehicle record
-        vehicleDetailsRepository.save(vehicle);
 
         // ----- PREVENT DUPLICATE ACTIVE ENTRY -----
         Entry activeEntry = entryRepository
@@ -75,6 +73,11 @@ public class EntryService {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(new ApiResponse<>("Vehicle already In", false));
         }
+
+        // Save updated vehicle record
+        vehicleDetailsRepository.save(vehicle);
+
+
 
         // ----- CREATE NEW ENTRY -----
         Entry entry = new Entry();
