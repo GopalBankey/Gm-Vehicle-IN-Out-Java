@@ -119,7 +119,7 @@ public class EntryService {
 
 
     // --------------------------------------------
-    //  OUT ENTRYa
+    //  OUT ENTRY
     // --------------------------------------------
     public ResponseEntity<ApiResponse> outEntry(String vehicleNumber) {
 
@@ -150,7 +150,7 @@ public class EntryService {
         String mobile = SecurityContextHolder.getContext().getAuthentication().getName();
         User loggedUser = userRepository.findByMobile(mobile).orElseThrow();
 
-        List<Entry> entries = entryRepository.findByUser(loggedUser);
+        List<Entry> entries = entryRepository.findByUserOrderByInTimeDesc(loggedUser);
 
         // Public base URL on Railway
         String baseUrl = "https://gm-vehicle-in-out-java-production.up.railway.app/files/";

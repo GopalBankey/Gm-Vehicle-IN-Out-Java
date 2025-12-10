@@ -14,4 +14,6 @@ public interface EntryRepository extends JpaRepository<Entry, Long> {
     Optional<Entry> findByVehicle_VehicleNumberAndUserAndOutTimeIsNull(String vehicleNumber, User user);
 
     List<Entry> findByUser(User user);
+    List<Entry> findByUserOrderByInTimeDesc(User user);
+
 }
