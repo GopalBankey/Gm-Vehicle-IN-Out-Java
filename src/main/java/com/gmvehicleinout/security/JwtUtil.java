@@ -8,7 +8,7 @@ import java.util.Date;
 public class JwtUtil {
 
     private static final String SECRET = "ZzGZv7UJhG8o+ViYDHsFtBW0/WC6+WwVjlCJhdzOi3U=";
-    private static final long ACCESS_EXPIRATION = 1000 * 60 * 60 * 24  * 6 ;     // 30 minutes
+    private static final long ACCESS_EXPIRATION = 1000 * 60 * 2 ;     // 30 minutes
     private static final long REFRESH_EXPIRATION = 1000 * 60 * 60 * 24 * 7; // 7 days
 
     // ============================
