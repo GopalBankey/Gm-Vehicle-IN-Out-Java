@@ -85,6 +85,7 @@ public class EntryService {
         entry.setLocation(entryDto.getLocation());
         entry.setKey(entryDto.isKey());
         entry.setUser(loggedUser);
+        entry.setInTime(LocalDateTime.now());
         entry.setDriverName(entryDto.getDriverName());
 
         entryRepository.save(entry);

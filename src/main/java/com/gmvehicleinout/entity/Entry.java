@@ -29,7 +29,7 @@ public class Entry {
     @Column(name = "has_key")
     private boolean key;
 
-    @CreationTimestamp
+//    @CreationTimestamp
     @Column(name = "in_time", updatable = false)
     private LocalDateTime inTime;
 
