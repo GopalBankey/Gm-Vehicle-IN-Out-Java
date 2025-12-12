@@ -73,7 +73,8 @@ public class AuthService {
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new ApiResponse<>("Invalid or expired refresh token", false));
+                    .body(new ApiResponse<>("Invalid or expired refresh token", false, null));
+
         }
     }
 
