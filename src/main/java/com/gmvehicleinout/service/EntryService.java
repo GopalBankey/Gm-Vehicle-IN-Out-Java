@@ -35,9 +35,12 @@ public class EntryService {
     // --------------------------------------------
     public ResponseEntity<ApiResponse<EntryResponseDto>> addEntry(
             EntryDto entryDto,
-            MultipartFile rcPhoto,
+            MultipartFile rcFrontPhoto,
+            MultipartFile rcBackPhoto,
+
             MultipartFile vehiclePhoto,
-            MultipartFile idCardPhoto
+            MultipartFile idCardFrontPhoto,
+            MultipartFile idCardBackPhoto
     ) {
 
         // Logged-in user
@@ -55,11 +58,11 @@ public class EntryService {
         vehicle.setChassisNumber(entryDto.getChassisNumber());
 
         // SAVE IMAGES INSIDE VEHICLE DETAILS
-        String rcFrontFile = fileUploadService.saveFile(rcPhoto);
-        String rcBackFile = fileUploadService.saveFile(rcPhoto);
+        String rcFrontFile = fileUploadService.saveFile(rcFrontPhoto);
+        String rcBackFile = fileUploadService.saveFile(rcBackPhoto);
         String vehicleFile = fileUploadService.saveFile(vehiclePhoto);
-        String idCardFrontFile = fileUploadService.saveFile(idCardPhoto);
-        String idCardBackFile = fileUploadService.saveFile(idCardPhoto);
+        String idCardFrontFile = fileUploadService.saveFile(idCardFrontPhoto);
+        String idCardBackFile = fileUploadService.saveFile(idCardBackPhoto);
 
         if (rcFrontFile != null) vehicle.setRcFrontPhoto(rcFrontFile);
         if (rcBackFile != null) vehicle.setRcFrontPhoto(rcBackFile);

@@ -29,15 +29,17 @@ public class EntryController {
     )
     public ResponseEntity<ApiResponse<EntryResponseDto>> addEntry(
             @RequestPart("data") String dataJson,
-            @RequestPart(value = "rcPhoto", required = false) MultipartFile rcPhoto,
+            @RequestPart(value = "rcFrontPhoto", required = false) MultipartFile rcFrontPhoto,
+            @RequestPart(value = "rcBackPhoto", required = false) MultipartFile rcBackPhoto,
             @RequestPart(value = "vehiclePhoto", required = false) MultipartFile vehiclePhoto,
-            @RequestPart(value = "idCardPhoto", required = false) MultipartFile idCardPhoto
+            @RequestPart(value = "idCardFrontPhoto", required = false) MultipartFile idCardFrontPhoto,
+            @RequestPart(value = "idCardBackPhoto", required = false) MultipartFile idCardBackPhoto
     ) throws JsonProcessingException {
 
         ObjectMapper mapper = new ObjectMapper();
         EntryDto entryDto = mapper.readValue(dataJson, EntryDto.class);
 
-        return entryService.addEntry(entryDto, rcPhoto, vehiclePhoto, idCardPhoto);
+        return entryService.addEntry(entryDto, rcFrontPhoto,  rcBackPhoto, vehiclePhoto, idCardFrontPhoto,idCardBackPhoto);
     }
 
 
