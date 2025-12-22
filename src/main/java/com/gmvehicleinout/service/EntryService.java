@@ -65,7 +65,7 @@ public class EntryService {
         String idCardBackFile = fileUploadService.saveFile(idCardBackPhoto);
 
         if (rcFrontFile != null) vehicle.setRcFrontPhoto(rcFrontFile);
-        if (rcBackFile != null) vehicle.setRcFrontPhoto(rcBackFile);
+        if (rcBackFile != null) vehicle.setRcBackPhoto(rcBackFile);
         if (vehicleFile != null) vehicle.setVehiclePhoto(vehicleFile);
         if (idCardFrontFile != null) vehicle.setIdCardFrontPhoto(idCardFrontFile);
         if (idCardBackFile != null) vehicle.setIdCardBackPhoto(idCardBackFile);
