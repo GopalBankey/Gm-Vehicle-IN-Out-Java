@@ -55,13 +55,17 @@ public class EntryService {
         vehicle.setChassisNumber(entryDto.getChassisNumber());
 
         // SAVE IMAGES INSIDE VEHICLE DETAILS
-        String rcFile = fileUploadService.saveFile(rcPhoto);
+        String rcFrontFile = fileUploadService.saveFile(rcPhoto);
+        String rcBackFile = fileUploadService.saveFile(rcPhoto);
         String vehicleFile = fileUploadService.saveFile(vehiclePhoto);
-        String idCardFile = fileUploadService.saveFile(idCardPhoto);
+        String idCardFrontFile = fileUploadService.saveFile(idCardPhoto);
+        String idCardBackFile = fileUploadService.saveFile(idCardPhoto);
 
-        if (rcFile != null) vehicle.setRcPhoto(rcFile);
+        if (rcFrontFile != null) vehicle.setRcFrontPhoto(rcFrontFile);
+        if (rcBackFile != null) vehicle.setRcFrontPhoto(rcBackFile);
         if (vehicleFile != null) vehicle.setVehiclePhoto(vehicleFile);
-        if (idCardFile != null) vehicle.setIdCardPhoto(idCardFile);
+        if (idCardFrontFile != null) vehicle.setIdCardFrontPhoto(idCardFrontFile);
+        if (idCardBackFile != null) vehicle.setIdCardBackPhoto(idCardBackFile);
 
 
         // ----- PREVENT DUPLICATE ACTIVE ENTRY -----
@@ -87,15 +91,18 @@ public class EntryService {
         entry.setUser(loggedUser);
         entry.setInTime(LocalDateTime.now());
         entry.setDriverName(entryDto.getDriverName());
+        entry.setNote(entryDto.getNote());
 
         entryRepository.save(entry);
 
         // ----- PREPARE FULL URLs -----
         String baseUrl = "https://gm-vehicle-in-out-java-production.up.railway.app/files/";
 
-        String rcUrl = vehicle.getRcPhoto() != null ? baseUrl + vehicle.getRcPhoto() : null;
+        String rcFrontUrl = vehicle.getRcFrontPhoto() != null ? baseUrl + vehicle.getRcFrontPhoto() : null;
+        String rcBackUrl = vehicle.getRcBackPhoto() != null ? baseUrl + vehicle.getRcBackPhoto() : null;
         String vehicleUrl = vehicle.getVehiclePhoto() != null ? baseUrl + vehicle.getVehiclePhoto() : null;
-        String idCardUrl = vehicle.getIdCardPhoto() != null ? baseUrl + vehicle.getIdCardPhoto() : null;
+        String idCardFrontUrl = vehicle.getIdCardFrontPhoto() != null ? baseUrl + vehicle.getIdCardFrontPhoto() : null;
+        String idCardBackUrl = vehicle.getIdCardBackPhoto() != null ? baseUrl + vehicle.getIdCardBackPhoto() : null;
 
         // ----- RESPONSE DTO -----
         EntryResponseDto response = new EntryResponseDto(
@@ -110,10 +117,13 @@ public class EntryService {
                 entry.getOutTime(),
                 entry.getCreatedAt(),
                 entry.getUpdatedAt(),
-                rcUrl,
+                rcFrontUrl,
+                rcBackUrl,
                 vehicleUrl,
-                idCardUrl,
-                entry.getDriverName()
+                idCardFrontUrl,
+                idCardBackUrl,
+                entry.getDriverName(),
+                entry.getNote()
 
         );
 
@@ -163,9 +173,11 @@ public class EntryService {
 
             VehicleDetails v = entry.getVehicle();
 
-            String rcUrl = v.getRcPhoto() != null ? baseUrl + v.getRcPhoto() : null;
+            String rcFrontUrl = v.getRcFrontPhoto() != null ? baseUrl + v.getRcFrontPhoto() : null;
+            String rcBackUrl = v.getRcBackPhoto() != null ? baseUrl + v.getRcBackPhoto() : null;
             String vehicleUrl = v.getVehiclePhoto() != null ? baseUrl + v.getVehiclePhoto() : null;
-            String idCardUrl = v.getIdCardPhoto() != null ? baseUrl + v.getIdCardPhoto() : null;
+            String idCardFrontUrl = v.getIdCardFrontPhoto() != null ? baseUrl + v.getIdCardFrontPhoto() : null;
+            String idCardBackUrl = v.getIdCardBackPhoto() != null ? baseUrl + v.getIdCardBackPhoto() : null;
 
             return new EntryResponseDto(
                     entry.getId(),
@@ -179,10 +191,13 @@ public class EntryService {
                     entry.getOutTime(),
                     entry.getCreatedAt(),
                     entry.getUpdatedAt(),
-                    rcUrl,
+                    rcFrontUrl,
+                    rcBackUrl,
                     vehicleUrl,
-                    idCardUrl,
-                    entry.getDriverName()
+                    idCardFrontUrl,
+                    idCardBackUrl,
+                    entry.getDriverName(),
+                    entry.getNote()
             );
         }).toList();
 

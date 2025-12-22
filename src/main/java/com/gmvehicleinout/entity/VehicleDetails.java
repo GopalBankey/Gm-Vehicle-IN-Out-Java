@@ -24,9 +24,12 @@ public class VehicleDetails {
     private String chassisNumber;
 
     // ⭐ ADD FILE NAME FIELDS HERE ⭐
-    private String rcPhoto;
+    private String rcFrontPhoto;
+    private String rcBackPhoto;
     private String vehiclePhoto;
-    private String idCardPhoto;
+    private String idCardFrontPhoto;
+    private String idCardBackPhoto;
+
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;

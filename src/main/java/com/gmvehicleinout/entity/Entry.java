@@ -36,12 +36,15 @@ public class Entry {
     @Column(name = "out_time")
     private LocalDateTime outTime;
 
+    private String note;
+
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
 
     // Entry belongs to user
     @ManyToOne

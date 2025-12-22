@@ -18,5 +18,6 @@ public class EntryDto {
     private String chassisNumber;
     private boolean key;
     private  String driverName;
+    private String note;
 
 }

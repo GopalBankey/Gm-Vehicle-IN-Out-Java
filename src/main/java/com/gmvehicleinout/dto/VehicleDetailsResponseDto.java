@@ -14,7 +14,9 @@ public class VehicleDetailsResponseDto {
     private String chassisNumber;
 
     // ⭐ Add Image URL Fields ⭐
-    private String rcPhotoUrl;
+    private String rcFrontPhotoUrl;
+    private String rcBackPhotoUrl;
     private String vehiclePhotoUrl;
-    private String idCardPhotoUrl;
+    private String idCardFrontPhotoUrl;
+    private String idCardBackPhotoUrl;
 }

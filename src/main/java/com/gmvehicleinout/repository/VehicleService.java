@@ -29,9 +29,11 @@ public class VehicleService {
                 vehicle.getOwnerName(),
                 vehicle.getMobile(),
                 vehicle.getChassisNumber(),
-              baseUrl +  vehicle.getRcPhoto(),
-               baseUrl + vehicle.getVehiclePhoto(),
-                baseUrl + vehicle.getIdCardPhoto()
+                baseUrl + vehicle.getRcFrontPhoto(),
+                baseUrl + vehicle.getRcBackPhoto(),
+                baseUrl + vehicle.getVehiclePhoto(),
+                baseUrl + vehicle.getIdCardFrontPhoto(),
+                baseUrl + vehicle.getIdCardBackPhoto()
 
         );
 

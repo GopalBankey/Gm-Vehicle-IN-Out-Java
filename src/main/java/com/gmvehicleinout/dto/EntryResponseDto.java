@@ -21,9 +21,12 @@ public class EntryResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    private String rcPhoto;        // NEW
+    private String rcFrontPhoto;        // NEW
+    private String rcBackPhoto;        // NEW
     private String vehiclePhoto;   // NEW
-    private String idCardPhoto;
+    private String idCardFrontPhoto;
+    private String idCardBackPhoto;
 
     private  String  driverName;// NEW
+    private  String  note;// NEW
 }
