@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class EntryService {
@@ -37,7 +36,6 @@ public class EntryService {
             EntryDto entryDto,
             MultipartFile rcFrontPhoto,
             MultipartFile rcBackPhoto,
-
             MultipartFile vehiclePhoto,
             MultipartFile idCardFrontPhoto,
             MultipartFile idCardBackPhoto

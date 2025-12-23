@@ -24,7 +24,7 @@ public class VehicleDetails {
     private String chassisNumber;
 
     // ⭐ ADD FILE NAME FIELDS HERE ⭐
-    private String rcFrontPhoto;
+    private String  rcFrontPhoto;
     private String rcBackPhoto;
     private String vehiclePhoto;
     private String idCardFrontPhoto;
