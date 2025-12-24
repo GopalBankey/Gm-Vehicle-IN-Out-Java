@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class EntryDto {
@@ -19,5 +21,7 @@ public class EntryDto {
     private boolean key;
     private  String driverName;
     private String note;
+    private List<Integer> serviceIds;
+    private String otherService;
 
 }

@@ -27,7 +27,7 @@ public class EntryController {
             value = "/in-entry",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
-    public ResponseEntity<ApiResponse<EntryResponseDto>> addEntry(
+    public ResponseEntity<ApiResponse> addEntry(
             @RequestPart("data") String dataJson,
             @RequestPart(value = "rcFrontPhoto", required = false) MultipartFile rcFrontPhoto,
             @RequestPart(value = "rcBackPhoto", required = false) MultipartFile rcBackPhoto,

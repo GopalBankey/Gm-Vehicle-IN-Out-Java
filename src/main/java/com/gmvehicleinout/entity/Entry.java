@@ -6,6 +6,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -53,6 +55,18 @@ public class Entry {
 
 
     private String driverName;
+    @ElementCollection
+    @CollectionTable(
+            name = "entry_services",
+            joinColumns = @JoinColumn(name = "entry_id")
+    )
+    @Column(name = "service_id")
+    private List<Long> serviceIds;
+
+    @Column(name = "other_service")
+    private String otherService;
+
+
 
 
 
