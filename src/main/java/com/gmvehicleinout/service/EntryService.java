@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +46,11 @@ public class EntryService {
             MultipartFile idCardFrontPhoto,
             MultipartFile idCardBackPhoto
     ) {
+
+        // ===============================
+        // IST TIME (FIXED)
+        // ===============================
+        LocalDateTime nowIST = LocalDateTime.now(ZoneId.of("Asia/Kolkata"));
 
         // ===============================
         // LOGGED-IN USER
@@ -84,8 +90,6 @@ public class EntryService {
         if (idCardFrontFile != null) vehicle.setIdCardFrontPhoto(idCardFrontFile);
         if (idCardBackFile != null) vehicle.setIdCardBackPhoto(idCardBackFile);
 
-        vehicleDetailsRepository.save(vehicle);
-
         // ===============================
         // PREVENT DUPLICATE ACTIVE ENTRY
         // ===============================
@@ -117,8 +121,10 @@ public class EntryService {
                     .body(new ApiResponse<>("Other service is required", false));
         }
 
+        vehicleDetailsRepository.save(vehicle);
+
         // ===============================
-        // CREATE ENTRY
+        // CREATE ENTRY (IST FIX APPLIED)
         // ===============================
         Entry entry = new Entry();
         entry.setVehicle(vehicle);
@@ -127,9 +133,13 @@ public class EntryService {
         entry.setKey(entryDto.isKey());
         entry.setDriverName(entryDto.getDriverName());
         entry.setNote(entryDto.getNote());
-        entry.setInTime(LocalDateTime.now());
 
-        //  FIX: List<Integer> → List<Long>
+        // 🔥 IST TIME SET EXPLICITLY
+        entry.setInTime(nowIST);
+        entry.setCreatedAt(nowIST);
+        entry.setUpdatedAt(nowIST);
+
+        // FIX: List<Integer> → List<Long>
         entry.setServiceIds(
                 entryDto.getServiceIds()
                         .stream()
@@ -140,49 +150,6 @@ public class EntryService {
         entry.setOtherService(entryDto.getOtherService());
 
         entryRepository.save(entry);
-
-        // ===============================
-        // PREPARE IMAGE URLs
-        // ===============================
-//        String baseUrl =
-//                "https://gm-vehicle-in-out-java-production.up.railway.app/files/";
-//
-//        String rcFrontUrl =
-//                vehicle.getRcFrontPhoto() != null ? baseUrl + vehicle.getRcFrontPhoto() : null;
-//        String rcBackUrl =
-//                vehicle.getRcBackPhoto() != null ? baseUrl + vehicle.getRcBackPhoto() : null;
-//        String vehicleUrl =
-//                vehicle.getVehiclePhoto() != null ? baseUrl + vehicle.getVehiclePhoto() : null;
-//        String idCardFrontUrl =
-//                vehicle.getIdCardFrontPhoto() != null ? baseUrl + vehicle.getIdCardFrontPhoto() : null;
-//        String idCardBackUrl =
-//                vehicle.getIdCardBackPhoto() != null ? baseUrl + vehicle.getIdCardBackPhoto() : null;
-//
-//        // ===============================
-//        // RESPONSE DTO (ALL 20 ARGS)
-//        // ===============================
-//        EntryResponseDto response = new EntryResponseDto(
-//                entry.getId(),                     // 1
-//                vehicle.getVehicleNumber(),        // 2
-//                vehicle.getOwnerName(),            // 3
-//                vehicle.getMobile(),               // 4
-//                vehicle.getChassisNumber(),        // 5
-//                entry.getLocation(),               // 6
-//                entry.isKey(),                     // 7
-//                entry.getInTime(),                 // 8
-//                entry.getOutTime(),                // 9
-//                entry.getCreatedAt(),              // 10
-//                entry.getUpdatedAt(),              // 11
-//                rcFrontUrl,                        // 12
-//                rcBackUrl,                         // 13
-//                vehicleUrl,                        // 14
-//                idCardFrontUrl,                    // 15
-//                idCardBackUrl,                     // 16
-//                entry.getDriverName(),             // 17
-//                entry.getNote(),                   // 18
-//                new ArrayList<>(),                 // 19 services (empty here)
-//                entry.getOtherService()             // 20 otherService
-//        );
 
         return ResponseEntity.ok(
                 new ApiResponse<>("Vehicle Added Successfully", true)

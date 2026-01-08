@@ -31,21 +31,21 @@ public class Entry {
     @Column(name = "has_key")
     private boolean key;
 
-//    @CreationTimestamp
+    private String note;
+
+
     @Column(name = "in_time", updatable = false)
     private LocalDateTime inTime;
 
     @Column(name = "out_time")
     private LocalDateTime outTime;
 
-    private String note;
-
-    @CreationTimestamp
-    @Column(updatable = false)
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    @UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
 
 
     // Entry belongs to user
@@ -65,9 +65,5 @@ public class Entry {
 
     @Column(name = "other_service")
     private String otherService;
-
-
-
-
 
 }
